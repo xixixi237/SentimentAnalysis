@@ -2,7 +2,9 @@ google-api-python-client
 pandas
 praw
 numpy
+nltk
 ntscraper
 matplotlib
 seaborn
+python-dotenv
 -e .
