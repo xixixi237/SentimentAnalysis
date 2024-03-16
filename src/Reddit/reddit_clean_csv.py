@@ -6,7 +6,7 @@ from nltk.stem import WordNetLemmatizer
 
 search_term = 'Gaza'
 # Load dataset
-file_path = f'./data/raw/reddit_{search_term}_results_with_comments.csv'
+file_path = f'./data/raw/reddit_{search_term}_posts_comments.csv'
 data = pd.read_csv(file_path)
 # Drop 'ID', 'Author', 'URL'
 data = data.drop(data.columns[[1, 2, 3]], axis=1)

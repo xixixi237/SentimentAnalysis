@@ -11,7 +11,7 @@ YOUTUBE_API_SERVICE_NAME = 'youtube'
 YOUTUBE_API_VERSION = 'v3'
 
 ##########################
-search_term = 'Rishi Sunak'
+search_term = 'Traitor BBC'
 ##########################
 
 

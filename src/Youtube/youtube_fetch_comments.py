@@ -4,7 +4,7 @@ import os
 from dotenv import load_dotenv
 
 load_dotenv()
-search_term = 'Rishi Sunak'
+search_term = 'Traitor BBC'
 
 # Load your API key from an environment variable or directly insert it
 DEVELOPER_KEY = os.getenv('DEVELOPER_KEY')

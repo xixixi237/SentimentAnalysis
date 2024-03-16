@@ -21,7 +21,7 @@ def fetch_top_comments(post_id):
     post = reddit.submission(id=post_id)
     post.comment_sort = 'best'
     post.comments.replace_more(limit=0)  # only get actual comments, no "more comments" links
-    top_comments = [comment.body for comment in post.comments.list()[:3]]
+    top_comments = [comment.body for comment in post.comments.list()[:50]]
     return top_comments
 
 # Add a column for top comments to the dataframe
