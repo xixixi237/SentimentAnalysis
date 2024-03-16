@@ -64,7 +64,7 @@ def get_channel_subscriber_count(channel_ids):
 def search_and_compile_video_data(search_term):
     video_ids = search_videos(search_term)
     if not video_ids:
-        return pd.DataFrame()  # Return an empty DataFrame if no videos found
+        return pd.DataFrame()  # Returns empty DataFrame if no videos found
     
     video_details = get_videos_details(video_ids)
     channel_ids = list({video['Channel ID'] for video in video_details})
