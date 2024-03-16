@@ -11,7 +11,7 @@ reddit = praw.Reddit(
     user_agent = os.getenv('user_agent'),
 )
 
-search_term = 'Gaza'
+search_term = ''
 
 # Load the CSV file containing post IDs
 df = pd.read_csv(f'./data/raw/reddit_{search_term}_results.csv')

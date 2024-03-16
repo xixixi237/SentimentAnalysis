@@ -4,7 +4,7 @@ from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 from nltk.stem import WordNetLemmatizer
 
-search_term = 'Gaza'
+search_term = ''
 # Load dataset
 file_path = f'./data/raw/reddit_{search_term}_posts_comments.csv'
 data = pd.read_csv(file_path)

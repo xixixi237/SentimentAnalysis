@@ -7,7 +7,7 @@ import os
 load_dotenv()
 
 # Search term
-search_term = 'Israel'
+search_term = ''
 
 client_id = os.getenv('client_id')
 client_secret = os.getenv('client_secret')

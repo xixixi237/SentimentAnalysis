@@ -8,8 +8,8 @@ import os
 load_dotenv()
 
 # Search term and subreddit
-search_term = 'Israel'
-subreddit = 'News'
+search_term = ''
+subreddit = ''
 
 client_id = os.getenv('client_id')
 client_secret = os.getenv('client_secret')
