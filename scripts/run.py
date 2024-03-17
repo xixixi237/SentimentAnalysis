@@ -8,7 +8,7 @@ def main():
     scripts = [
         "./src/Youtube/youtube_fetch_posts.py",
         "./src/Reddit/reddit_fetch_posts.py",
-        "./src/Youtube/youtube_fetch_comments.py"
+        "./src/Youtube/youtube_fetch_comments.py",
         "./src/Reddit/reddit_fetch_comments.py"
     ]
 
