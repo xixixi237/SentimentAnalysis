@@ -79,7 +79,7 @@ def search_and_compile_video_data(search_term):
 
 df_videos = search_and_compile_video_data(search_term)
 
-csv_filename = f'./data/raw/youtube_{search_term}_results.csv'
+csv_filename = f'./data/raw/Youtube/youtube_{search_term}_results.csv'
 df_videos.to_csv(csv_filename, index=False)
 
 print(f"Data saved to {csv_filename}.")

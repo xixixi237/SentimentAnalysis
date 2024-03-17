@@ -43,6 +43,6 @@ df_videos = pd.read_csv(f'./data/raw/youtube_{search_term}_results.csv')  # path
 df_videos_with_comments = append_comments_to_df(df_videos)
 
 # Save to a new CSV
-df_videos_with_comments.to_csv(f'./data/raw/youtube_{search_term}_results_with_comments.csv', index=False)
+df_videos_with_comments.to_csv(f'./data/raw/Youtube/youtube_{search_term}_results_with_comments.csv', index=False)
 
 print("Top comments added and data saved.")
