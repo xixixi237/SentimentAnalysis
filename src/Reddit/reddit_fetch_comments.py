@@ -62,7 +62,7 @@ def main(search_term):
     new_csv_filename = f'./data/raw/Reddit/reddit_{search_term}_posts_comments.csv'
     comments_df.to_csv(new_csv_filename, index=False)
 
-    print(f"Expanded data saved to {new_csv_filename}.")
+    print(f"Data saved to {new_csv_filename}.")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()

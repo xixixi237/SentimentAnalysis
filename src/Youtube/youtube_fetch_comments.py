@@ -49,7 +49,7 @@ def main(search_term):
     # Save to a new CSV
     df_videos_with_comments.to_csv(f'./data/raw/Youtube/youtube_{search_term}_results_with_comments.csv', index=False)
 
-    print("Top comments added and data saved.")
+    print(f"Data saved to youtube_{search_term}_results_with_comments.csv.")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
