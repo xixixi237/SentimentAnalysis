@@ -1,33 +1,63 @@
-import praw
+import requests
 import pandas as pd
+from datetime import datetime
 from dotenv import load_dotenv
 import os
 
 load_dotenv()
 
-reddit = praw.Reddit(
-    client_id = os.getenv('client_id'),
-    client_secret = os.getenv('client_secret'),
-    user_agent = os.getenv('user_agent'),
-)
-
+# Search term
 search_term = ''
 
-# Load the CSV file containing post IDs
-df = pd.read_csv(f'./data/raw/reddit_{search_term}_results.csv')
+client_id = os.getenv('client_id')
+client_secret = os.getenv('client_secret')
+user_agent = os.getenv('user_agent')
 
-# Fetch top 3 comments for a given post ID
-def fetch_top_comments(post_id):
-    post = reddit.submission(id=post_id)
-    post.comment_sort = 'best'
-    post.comments.replace_more(limit=0)  # only get actual comments, no "more comments" links
-    top_comments = [comment.body for comment in post.comments.list()[:50]]
-    return top_comments
+# Authenticate
+auth = requests.auth.HTTPBasicAuth(client_id, client_secret)
+data = {'grant_type': 'password', 'username': os.getenv('user_name'), 'password': os.getenv('password')}
+headers = {'User-Agent': user_agent}
+response = requests.post('https://www.reddit.com/api/v1/access_token', auth=auth, data=data, headers=headers)
+TOKEN = response.json()['access_token']
 
-# Add a column for top comments to the dataframe
-df['Top_Comments'] = df['ID'].apply(lambda x: fetch_top_comments(x))
+# Setting up the header with our access token
+headers = {**headers, **{'Authorization': f"bearer {TOKEN}"}}
 
-# Optionally, save this enhanced dataframe back to a new CSV
-df.to_csv(f'./data/raw/reddit_{search_term}_results_with_comments.csv', index=False)
+# New structure to store post data and concatenated comments
+posts_comments_data = {}
 
-print("Top comments added and data saved.")
+df = pd.read_csv(f'./data/raw/Reddit/reddit_{search_term}_posts.csv')
+
+# Loop through each post ID to fetch top comments
+for index, row in df.iterrows():
+    post_id = row['ID']
+    response = requests.get(f'https://oauth.reddit.com/comments/{post_id}?sort=top&limit=50',
+                            headers=headers)
+    comments = response.json()
+
+    # Initialize an empty string to store concatenated comments for the current post
+    concatenated_comments = ''
+    
+    # Extract top comments
+    for comment in comments[1]['data']['children']:
+        comment_data = comment['data']
+        # Concatenate comment body to the string, followed by optional separator (e.g., "/")
+        concatenated_comments += comment_data.get('body', 'N/A') + " "
+    
+    # Store post data and concatenated comments in the dictionary
+    posts_comments_data[post_id] = [
+        row['Title'], post_id, row['Author'], row['URL'], row['Upvotes'],
+        row['Date'], row['Subreddit'], row['Subreddit_Size'],
+        concatenated_comments
+    ]
+
+# Convert the dictionary to a DataFrame
+columns = ['Title', 'Post_ID', 'Post_Author', 'URL', 'Post_Upvotes', 'Post_Date', 
+           'Subreddit', 'Subreddit_Size', 'Top_Comments']
+comments_df = pd.DataFrame.from_dict(posts_comments_data, orient='index', columns=columns)
+
+# Save the comments DataFrame to a new CSV
+new_csv_filename = f'./data/raw/Reddit/reddit_{search_term}_posts_comments.csv'
+comments_df.to_csv(new_csv_filename, index=False)
+
+print(f"Expanded data saved to {new_csv_filename}.")

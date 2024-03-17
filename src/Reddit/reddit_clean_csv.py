@@ -6,7 +6,7 @@ from nltk.stem import WordNetLemmatizer
 
 search_term = ''
 # Load dataset
-file_path = f'./data/raw/reddit_{search_term}_posts_comments.csv'
+file_path = f'./data/raw/Reddit/reddit_{search_term}_posts_comments.csv'
 data = pd.read_csv(file_path)
 # Drop 'ID', 'Author', 'URL'
 data = data.drop(data.columns[[1, 2, 3]], axis=1)
@@ -44,7 +44,7 @@ def clean_text(text):
 data['Title'] = data['Title'].apply(clean_text)
 data['Top_Comments'] = data['Top_Comments'].apply(clean_text)
 
-cleaned_file_path = f'./data/processed/cleaned_reddit_{search_term}.csv'
+cleaned_file_path = f'./data/processed/Reddit/cleaned_reddit_{search_term}.csv'
 data.to_csv(cleaned_file_path, index=False)
 
 cleaned_file_path
