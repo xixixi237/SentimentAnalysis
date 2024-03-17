@@ -8,8 +8,8 @@ import os
 load_dotenv()
 
 # Search term and subreddit
-search_term = ''
-subreddit = ''
+search_term = 'Labour'
+subreddit = 'all'
 
 client_id = os.getenv('client_id')
 client_secret = os.getenv('client_secret')
@@ -28,6 +28,7 @@ headers = {**headers, **{'Authorization': f"bearer {TOKEN}"}}
 # Perform a search in the specified subreddit
 response = requests.get(f'https://oauth.reddit.com/r/{subreddit}/search?q={search_term}&sort=top&t=week&limit=100',
                         headers=headers)
+
 
 # Extracting data
 posts = response.json()['data']['children']

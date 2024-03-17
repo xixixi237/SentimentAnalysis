@@ -2,47 +2,58 @@ from googleapiclient.discovery import build
 import pandas as pd
 import os
 from dotenv import load_dotenv
+import argparse
+    
+    
+    
+    
+def main(search_term):   
+    
+    load_dotenv()
+    
+    DEVELOPER_KEY = os.getenv('DEVELOPER_KEY')
+    YOUTUBE_API_SERVICE_NAME = 'youtube'
+    YOUTUBE_API_VERSION = 'v3'
 
-load_dotenv()
-search_term = 'Traitor BBC'
+    # Initialize 
+    youtube = build(YOUTUBE_API_SERVICE_NAME, YOUTUBE_API_VERSION, developerKey=DEVELOPER_KEY)
 
-# Load your API key from an environment variable or directly insert it
-DEVELOPER_KEY = os.getenv('DEVELOPER_KEY')
-YOUTUBE_API_SERVICE_NAME = 'youtube'
-YOUTUBE_API_VERSION = 'v3'
+    def get_top_comments(video_id, max_results=50):
+        comments = []
+        try:
+            response = youtube.commentThreads().list(
+                part='snippet',
+                videoId=video_id,
+                maxResults=max_results,
+                order='relevance',  # Assuming 'relevance' might favor comments with more likes
+                textFormat='plainText'
+            ).execute()
 
-# Initialize the YouTube API client
-youtube = build(YOUTUBE_API_SERVICE_NAME, YOUTUBE_API_VERSION, developerKey=DEVELOPER_KEY)
+            for item in response.get('items', []):
+                comment = item['snippet']['topLevelComment']['snippet']['textDisplay']
+                comments.append(comment)
+        except Exception as e:
+            print(f"Error fetching comments for video {video_id}: {e}")
+        return comments
 
-def get_top_comments(video_id, max_results=50):
-    comments = []
-    try:
-        response = youtube.commentThreads().list(
-            part='snippet',
-            videoId=video_id,
-            maxResults=max_results,
-            order='relevance',  # Assuming 'relevance' might favor comments with more likes
-            textFormat='plainText'
-        ).execute()
+    def append_comments_to_df(df):
+        df['Comments'] = df['ID'].apply(get_top_comments)
+        return df
 
-        for item in response.get('items', []):
-            comment = item['snippet']['topLevelComment']['snippet']['textDisplay']
-            comments.append(comment)
-    except Exception as e:
-        print(f"Error fetching comments for video {video_id}: {e}")
-    return comments
+    # Load existing DataFrame
+    df_videos = pd.read_csv(f'./data/raw/Youtube/youtube_{search_term}_results.csv')  # path to CSV file
 
-def append_comments_to_df(df):
-    df['Comments'] = df['ID'].apply(get_top_comments)
-    return df
+    # Append comments to DataFrame
+    df_videos_with_comments = append_comments_to_df(df_videos)
 
-# Load existing DataFrame
-df_videos = pd.read_csv(f'./data/raw/youtube_{search_term}_results.csv')  # path to CSV file
+    # Save to a new CSV
+    df_videos_with_comments.to_csv(f'./data/raw/Youtube/youtube_{search_term}_results_with_comments.csv', index=False)
 
-# Append comments to DataFrame
-df_videos_with_comments = append_comments_to_df(df_videos)
+    print("Top comments added and data saved.")
 
-# Save to a new CSV
-df_videos_with_comments.to_csv(f'./data/raw/Youtube/youtube_{search_term}_results_with_comments.csv', index=False)
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("search_term", help="The search term to use for fetching posts")
+    args = parser.parse_args()
 
-print("Top comments added and data saved.")
+    main(args.search_term)
