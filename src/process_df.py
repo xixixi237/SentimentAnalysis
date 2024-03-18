@@ -27,7 +27,7 @@ for file_name in files_to_explode:
         results_df = pd.read_csv(results_path)
         comments_df = pd.read_csv(comments_path)
 
-        comments_expanded = comments_df.assign(Comments=comments_df['Comments'].str.split(', ')).explode('Comments')
+        comments_expanded = comments_df.assign(Comments=comments_df['Comments'].str.split(', FIX!!!!HERE!!!###')).explode('Comments')
 
         # Save the final DataFrame to a new CSV file
         comments_expanded.to_csv(f'./data/processed/Youtube/{file_name}_YT.csv', index=False)
