@@ -96,7 +96,7 @@ def main(search_term):
         return channel_details  
     
     def update_comments_with_countries(df):
-        BATCH_SIZE = 50  # YouTube API allows fetching details for up to 50 channels at a time
+        BATCH_SIZE = 50  
         unique_author_ids = df['AuthorChannelId'].dropna().unique()
         string_author_ids = [str(id) for id in unique_author_ids if pd.notnull(id)]
         
@@ -124,9 +124,9 @@ def main(search_term):
     df_videos_with_comments_and_countries = update_comments_with_countries(df_videos_with_comments)
 
     # Save to a new CSV
-    df_videos_with_comments_and_countries.to_csv(f'./data/raw/Youtube/youtube_{search_term}_results_with_comments_and_countries.csv', index=False)
+    df_videos_with_comments_and_countries.to_csv(f'./data/raw/Youtube/{search_term}_youtube_.csv', index=False)
 
-    print(f"Data saved to youtube_{search_term}_results_with_comments_and_countries.csv.")
+    print(f"Data saved to ./data/raw/Youtube/rfsa/{search_term}_youtube_.csv")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
