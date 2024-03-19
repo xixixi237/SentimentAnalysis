@@ -6,7 +6,7 @@ def run_script(script_name, search_term):
 def main():
     search_term = input("Enter search term for sentiment analysis > ")  # Set your search term here
     scripts = [
-        "./tests/Youtube/search_term_fetch.py",
+        "./src/Youtube/search_term_fetch.py",
         #"./src/Reddit/reddit_fetch_posts.py",
         #"./src/Reddit/reddit_fetch_comments.py"
     ]
