@@ -90,39 +90,60 @@ def fetch_channel_countries(youtube, channel_ids):
 
     return channel_countries
 
+def fetch_channel_subscriber_count(youtube, channel_ids):
+    channel_subscribers = {}
+    for channel_id in channel_ids:
+        try:
+            response = youtube.channels().list(id=channel_id, part='statistics').execute()
+            for item in response.get('items', []):
+                subscribers = item['statistics'].get('subscriberCount', 'Unknown')
+                channel_subscribers[channel_id] = subscribers
+        except Exception as e:
+            print(f"Error fetching subscriber count for channel {channel_id}: {e}")
+            channel_subscribers[channel_id] = 'Unknown'
+    return channel_subscribers
+
 # Main function to orchestrate the fetching and compiling of YouTube data
 def main(search_term):
     youtube = initialize_youtube_api()
+    
+    # Fetch video details based on the search term
     video_details = fetch_video_details(youtube, search_term)
     video_ids = [video['ID'] for video in video_details]
+    
+    # Fetch comments for the fetched videos
     comments = fetch_comments(youtube, video_ids)
-
-    # Convert fetched data to DataFrames
+    
+    # Create DataFrames from the fetched data
     videos_df = pd.DataFrame(video_details)
     comments_df = pd.DataFrame(comments)
     
-    # Merge videos and comments data
-    final_df = pd.merge(videos_df, comments_df, on='ID', how='outer')
-
-    # Fetch channel countries
-    unique_channel_ids = final_df['Channel ID'].unique()
-    channel_countries = fetch_channel_countries(youtube, unique_channel_ids)
+    # Fetch channel subscriber count for the channels associated with the videos
+    unique_channel_ids = list(set(videos_df['Channel ID']))
+    channel_subscribers = fetch_channel_subscriber_count(youtube, unique_channel_ids)
     
-    # Map channel countries to the final dataframe
-    final_df['Country'] = final_df['Channel ID'].map(channel_countries)
-
-    # Remove Channel ID 
+    # Map the subscriber count to the videos DataFrame
+    videos_df['Subscriber Count'] = videos_df['Channel ID'].map(channel_subscribers)
+    
+    # Fetch channel countries for additional data enrichment
+    channel_countries = fetch_channel_countries(youtube, unique_channel_ids)
+    videos_df['Country'] = videos_df['Channel ID'].map(channel_countries)
+    
+    # Merge video details with comments
+    final_df = pd.merge(videos_df, comments_df, on='ID', how='outer')
+    
+    # Optionally drop the 'Channel ID' column if it's no longer needed
     final_df.drop('Channel ID', axis=1, inplace=True)
-
-    # Load existing data if present and update it
-    csv_filename = f'./data/raw/Youtube/{search_term}_youtube.csv'
+    
+    # Handle potential duplicates and save the updated DataFrame
+    csv_filename = f'./data/{search_term}_youtube.csv'
     if os.path.exists(csv_filename):
         existing_df = pd.read_csv(csv_filename)
         final_df = pd.concat([existing_df, final_df]).drop_duplicates(subset=['ID'])
-
-    # Save the updated DataFrame
+    
     final_df.to_csv(csv_filename, index=False)
     print(f"Data saved to {csv_filename}.")
+
 
 
 if __name__ == "__main__":
