@@ -1,12 +1,13 @@
 argparse
-google-api-python-client
 datetime
-pandas
-praw
+emoji
+google-api-python-client
+matplotlib
 numpy
 nltk
 ntscraper
-matplotlib
-seaborn
+pandas
+praw
 python-dotenv
+seaborn
 -e .

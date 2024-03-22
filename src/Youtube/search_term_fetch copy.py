@@ -65,7 +65,7 @@ def fetch_comments(youtube, video_ids):
                 print(f"Error fetching comments for video {video_id}: {e}")
     if videos_with_disabled_comments:
         print(f"Comments are disabled for videos: {', '.join(videos_with_disabled_comments)}")
-    print(f"comments fetched..")
+    print(f"{video_id} video details fetched")
     return comments
 
 # Function to fetch channel details, including country
@@ -129,15 +129,11 @@ def main(search_term):
     channel_countries = fetch_channel_countries(youtube, unique_channel_ids)
     videos_df['Country'] = videos_df['Channel ID'].map(channel_countries)
     
-     # Insert the search term column at the beginning of both DataFrames
-    videos_df.insert(0, 'Search Term', search_term)
-    comments_df.insert(0, 'Search Term', search_term)
-    
     # Merge video details with comments
     final_df = pd.merge(videos_df, comments_df, on='ID', how='outer')
     
-    # Option
-    #final_df.drop('Channel ID', axis=1, inplace=True)
+    # Optionally drop the 'Channel ID' column if it's no longer needed
+    final_df.drop('Channel ID', axis=1, inplace=True)
     
     # Handle potential duplicates and save the updated DataFrame
     csv_filename = f'./data/{search_term}_youtube.csv'
