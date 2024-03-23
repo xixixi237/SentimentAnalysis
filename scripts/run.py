@@ -4,11 +4,13 @@ def run_script(script_name, search_term):
     subprocess.run(["python", script_name, search_term], check=True)
 
 def main():
-    search_term = input("Enter search term for sentiment analysis > ")  # Set your search term here
+    search_term = input("Enter search term for sentiment analysis > ")  # get search term
     scripts = [
         "./src/Youtube/search_term_fetch.py",
         #"./src/Reddit/reddit_fetch_posts.py",
-        #"./src/Reddit/reddit_fetch_comments.py"
+        #"./src/Reddit/reddit_fetch_comments.py",
+        "./src/Youtube/produce_sentiment.py"
+
     ]
 
     for script in scripts:
