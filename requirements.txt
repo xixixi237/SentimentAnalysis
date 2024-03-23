@@ -9,5 +9,9 @@ ntscraper
 pandas
 praw
 python-dotenv
+scipy
 seaborn
+streamlit
+torch
+tqdm
 -e .
