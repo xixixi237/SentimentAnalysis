@@ -3,6 +3,7 @@ import subprocess
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+import plotly.express as px
 import seaborn as sns
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
 import torch
@@ -10,6 +11,7 @@ from scipy.special import softmax
 from tqdm import tqdm
 from search_term_fetch import search_term_fetch
 from produce_sentiment import produce_sentiment
+from plots import violin_plot, likes_post, word_plot
 
 
 
@@ -18,19 +20,39 @@ def main():
     st.title("YouTube Comment Sentiment Analysis")
 
     search_term = st.text_input("Enter a search term:", "")
+    # Add a number input widget to get the number of weeks
+    num_weeks = st.number_input('Enter number of weeks for video search:', min_value=1, value=1)
 
     if st.button("Analyze"):
         if search_term:
-            # Display a message while data is being fetched and analyzed
             with st.spinner('Fetching YouTube data and analyzing sentiment...'):
                 try:
-                    # Fetch YouTube data
-                    search_term_fetch(search_term)
-                    # Now perform sentiment analysis on the fetched data
-                    analysis_results_df = produce_sentiment(search_term)
-                    # Display results
+                    # Pass the num_weeks variable to the fetch_video_details function
+                    search_term_fetch(search_term, num_weeks)  # make sure your function can accept this parameter
+                    results_df = produce_sentiment(search_term)
+
                     st.write(f"Sentiment analysis results for '{search_term}':")
-                    st.dataframe(analysis_results_df)
+                    st.dataframe(results_df)
+
+                    # Now we directly display the plots without waiting for a checkbox to be checked.
+                    try:
+                        fig1 = violin_plot(results_df, search_term)
+                        st.plotly_chart(fig1)  # Use st.pyplot(fig) if it's a matplotlib figure
+                    except Exception as e:
+                        st.error(f"An error occurred while generating the violin plot: {e}")
+
+                    try:
+                        fig2 = likes_post(results_df, search_term)
+                        st.plotly_chart(fig2)  # Adjust accordingly if not a plotly figure
+                    except Exception as e:
+                        st.error(f"An error occurred while generating the likes per comment plot: {e}")
+                        
+                    try:
+                        fig3 = word_plot(results_df, search_term)
+                        st.plotly_chart(fig3)  # Adjust accordingly if not a plotly figure
+                    except Exception as e:
+                        st.error(f"An error occurred while generating the word plot: {e}")
+
                 except Exception as e:
                     st.error(f"An error occurred: {e}")
         else:

@@ -1,7 +1,8 @@
 from googleapiclient.discovery import build
 import pandas as pd
 import os
-from datetime import datetime
+from datetime import datetime, timedelta
+import isodate
 from dotenv import load_dotenv
 import streamlit as st
 
@@ -16,9 +17,24 @@ def initialize_youtube_api():
     return youtube
 
 # Function to fetch YouTube video details based on search term
-def fetch_video_details(youtube, search_term):
-    search_response = youtube.search().list(q=search_term, part='snippet', maxResults=50, order='relevance', type='video').execute()
+def fetch_video_details(youtube, search_term, num_weeks):
+    # Current time in UTC
+    now = datetime.now(isodate.UTC)
+    timeline = now - timedelta(weeks=num_weeks)
+    
+    # Format the time in RFC 3339 without nanoseconds
+    published_after = timeline.strftime('%Y-%m-%dT%H:%M:%SZ')
+
+    search_response = youtube.search().list(
+        q=search_term,
+        part='snippet',
+        maxResults=50,
+        order='relevance',
+        publishedAfter=published_after,
+        type='video'
+    ).execute()
     videos = []
+    
     for item in search_response.get('items', []):
         video_id = item['id']['videoId']
         video_details = youtube.videos().list(id=video_id, part='snippet,statistics').execute().get('items', [])[0]
@@ -104,12 +120,12 @@ def fetch_channel_subscriber_count(youtube, channel_ids):
     return channel_subscribers
 
 # Main function to orchestrate the fetching and compiling of YouTube data
-def search_term_fetch(search_term):
+def search_term_fetch(search_term, num_weeks):
     if search_term:  # Only proceed if a search term was entered
         youtube = initialize_youtube_api()
 
         # Fetch video details based on the search term
-        video_details = fetch_video_details(youtube, search_term)
+        video_details = fetch_video_details(youtube, search_term, num_weeks)
         video_ids = [video['ID'] for video in video_details]
 
         # Fetch comments for the fetched videos
