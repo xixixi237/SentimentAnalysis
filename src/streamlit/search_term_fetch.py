@@ -6,7 +6,7 @@ import isodate
 from dotenv import load_dotenv
 import streamlit as st
 
-# Function to initialize YouTube API client
+# Initialize YouTube API client
 def initialize_youtube_api():
     load_dotenv()
     DEVELOPER_KEY = os.getenv('DEVELOPER_KEY')
@@ -16,13 +16,13 @@ def initialize_youtube_api():
     print("Youtube API Succesfully Initialised")
     return youtube
 
-# Function to fetch YouTube video details based on search term
+# Fetch YouTube video details based on search term
 def fetch_video_details(youtube, search_term, num_weeks):
     # Current time in UTC
     now = datetime.now(isodate.UTC)
     timeline = now - timedelta(weeks=num_weeks)
     
-    # Format the time in RFC 3339 without nanoseconds
+    # Format the time in RFC 3339 (without nanoseconds)
     published_after = timeline.strftime('%Y-%m-%dT%H:%M:%SZ')
 
     search_response = youtube.search().list(
@@ -51,7 +51,7 @@ def fetch_video_details(youtube, search_term, num_weeks):
     print(f"{search_term} video details fetched")
     return videos
 
-# Function to fetch comments for each video
+# Fetch comments for each video
 def fetch_comments(youtube, video_ids):
     comments = []
     videos_with_disabled_comments =[]
@@ -76,7 +76,7 @@ def fetch_comments(youtube, video_ids):
         except Exception as e:
             if e.resp.status == 403:
                 videos_with_disabled_comments.append(video_id)
-                continue #no comments, skip to next video
+                continue # No comments, skip to next video
             else:
                 print(f"Error fetching comments for video {video_id}: {e}")
     if videos_with_disabled_comments:
@@ -84,7 +84,7 @@ def fetch_comments(youtube, video_ids):
     print(f"comments fetched..")
     return comments
 
-# Function to fetch channel details, including country
+# Fetch channel details, including country
 def fetch_channel_countries(youtube, channel_ids):
     channel_countries = {}
     BATCH_SIZE = 50 
@@ -119,7 +119,7 @@ def fetch_channel_subscriber_count(youtube, channel_ids):
             channel_subscribers[channel_id] = 'Unknown'
     return channel_subscribers
 
-# Main function to orchestrate the fetching and compiling of YouTube data
+# Main function to perform fetching and compiling of YouTube data
 def search_term_fetch(search_term, num_weeks):
     if search_term:  # Only proceed if a search term was entered
         youtube = initialize_youtube_api()

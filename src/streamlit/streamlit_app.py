@@ -1,14 +1,5 @@
 import streamlit as st
-import subprocess
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
 import plotly.express as px
-import seaborn as sns
-from transformers import AutoTokenizer, AutoModelForSequenceClassification
-import torch
-from scipy.special import softmax
-from tqdm import tqdm
 from search_term_fetch import search_term_fetch
 from produce_sentiment import produce_sentiment
 from plots import violin_plot, likes_post, word_plot
