@@ -13,18 +13,18 @@ stop_words = set(stopwords.words('english'))
 
 
 def violin_plot(results_df, search_term):
-    # Prepare the DataFrame for Plotly by first renaming the sentiment types
+    # Renaming the sentiment types
     results_df = results_df.rename(columns={
         'roberta_neg': 'Negative',
         'roberta_neu': 'Neutral',
         'roberta_pos': 'Positive'
     })
     
-    # Then melt it into a long format
+    # Melt it into a long format
     long_df = results_df.melt(value_vars=['Negative', 'Neutral', 'Positive'], 
                               var_name='Sentiment', value_name='Score')
 
-    # Define a dictionary mapping sentiment types to specific colors
+    # Dictionary mapping sentiment types to specific colors
     color_map = {
         'Negative': 'red',  
         'Neutral': 'blue',  
@@ -37,35 +37,32 @@ def violin_plot(results_df, search_term):
                     title=f'Distribution of Sentiment Scores for {search_term}',
                     color_discrete_map=color_map)  # Apply the custom color map
 
-    # Update layout for aesthetics similar to your original plot
+    # Update layout for aesthetics
     fig.update_layout(
         yaxis_title='Score',
         xaxis_title='Sentiment',
         template='plotly_white'
     )
 
-    # Adjusting the x-axis tick angle
     fig.update_xaxes(tickangle=45)
 
     return fig
 
 def likes_post(results_df, search_term):
     max_likes = results_df['Likes_y'].max()
-    # Create the scatter plot with a larger figure size
     fig = px.scatter(results_df, x='ID', y='Likes_y',
                     hover_data=['Comment'],  # Shows the comment text on hover
                     color='Title',  # Color-code by title
                     title=f'Likes per Comment for {search_term}')
 
-    # Improve layout with a larger figure size
+    # Larger figure size
     fig.update_layout(
-        xaxis_title="Comment Identifier",
         yaxis_title="Likes per Comment",
         hovermode="closest",
         yaxis=dict(range=[0, max_likes + (0.1 * max_likes)]),
-        showlegend=True,  # Hide legend if it's not necessary
-        height=1000,  # You can adjust the height
-        width=1000  # You can adjust the width
+        showlegend=True, 
+        height=1000,
+        width=1000 
     )
 
     # Potentially hide overlapping x-axis labels
@@ -100,15 +97,15 @@ def word_plot(results_df, search_term):
     # Separate the words and counts into two lists for plotting
     words, counts = zip(*most_common_words)
 
-    # Create a bar plot with Plotly
+    # Create a bar plot
     fig = px.bar(y=words, x=counts, orientation='h', title=f"Top 40 Most Common Words in {search_term} Comments",
                 labels={'x':'Frequency', 'y':'Words'},
                 color=counts,  # Assigns a color based on the counts
                 color_continuous_scale='plotly3')
     fig.update_layout(
         xaxis_tickangle=-45,
-        width=600,  # Adjust width as needed
-        height=1000,  # Adjust height as needed, especially for a large number of words
+        width=600, 
+        height=1000, 
         title=f'Top 40 Most Common Words in {search_term} Comments',
         xaxis_title='Frequency',
         yaxis_title='Words'

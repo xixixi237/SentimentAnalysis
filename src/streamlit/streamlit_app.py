@@ -12,20 +12,16 @@ def main():
 
     search_term = st.text_input("Enter a search term:", "")
     # Add a number input widget to get the number of weeks
-    num_weeks = st.number_input('Enter number of weeks for video search:', min_value=1, value=1)
+    num_weeks = st.number_input('Enter the search timeline in weeks from today:', min_value=1, value=1)
 
     if st.button("Analyze"):
         if search_term:
-            with st.spinner('Fetching YouTube data and analyzing sentiment...'):
+            with st.spinner('Fetching YouTube data and analysing sentiment...'):
                 try:
-                    # Pass the num_weeks variable to the fetch_video_details function
-                    search_term_fetch(search_term, num_weeks)  # make sure your function can accept this parameter
+                    search_term_fetch(search_term, num_weeks)
                     results_df = produce_sentiment(search_term)
 
-                    st.write(f"Sentiment analysis results for '{search_term}':")
-                    st.dataframe(results_df)
-
-                    # Now we directly display the plots without waiting for a checkbox to be checked.
+                    # Display Plots
                     try:
                         fig1 = violin_plot(results_df, search_term)
                         st.plotly_chart(fig1)  # Use st.pyplot(fig) if it's a matplotlib figure
@@ -43,6 +39,9 @@ def main():
                         st.plotly_chart(fig3)  # Adjust accordingly if not a plotly figure
                     except Exception as e:
                         st.error(f"An error occurred while generating the word plot: {e}")
+                    
+                    st.write(f"Sentiment analysis results for '{search_term}':")
+                    st.dataframe(results_df)
 
                 except Exception as e:
                     st.error(f"An error occurred: {e}")

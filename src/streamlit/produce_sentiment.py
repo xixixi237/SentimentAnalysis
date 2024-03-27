@@ -5,10 +5,8 @@ from scipy.special import softmax
 import torch
 from tqdm import tqdm
 
-# Assuming dotenv and necessary environment setup is handled elsewhere if needed
 
 def produce_sentiment(search_term):
-    # Define the path for the CSV file
     csv_file_path = f'./data/{search_term}_youtube.csv'
     
     # Load the DataFrame
@@ -40,7 +38,7 @@ def produce_sentiment(search_term):
 
     # Process the DataFrame in batches
     batch_size = 256  # Define batch size
-    res = {}  # Initialize results dictionary
+    res = {}  # Initialise results dictionary
 
     for i in tqdm(range(0, len(df), batch_size), total=np.ceil(len(df)/batch_size)):
         batch_df = df.iloc[i:i+batch_size]
@@ -61,7 +59,7 @@ def produce_sentiment(search_term):
     results_df = results_df.reset_index().rename(columns={'index': 'NewID'})
     results_df = results_df.merge(df, how='left')
     
-    # Optionally save the results DataFrame to a CSV file
+    # Save the results DataFrame to a CSV file
     output_csv_path = f"./data/processed/Youtube/{search_term}_roberta.csv"
     results_df.to_csv(output_csv_path, index=False)
     
