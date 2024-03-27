@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import plotly.express as px
+from pycountry_convert import country_alpha2_to_country_name, country_name_to_country_alpha3
 from collections import Counter
 from nltk.corpus import stopwords
 import re
@@ -110,4 +111,53 @@ def word_plot(results_df, search_term):
         xaxis_title='Frequency',
         yaxis_title='Words'
     )
+    return fig
+
+def convert_alpha2_to_alpha3(alpha_2):
+    if not isinstance(alpha_2, str) or alpha_2.lower() == 'unknown':
+        return None
+    try:
+        country_name = country_alpha2_to_country_name(alpha_2)
+        return country_name_to_country_alpha3(country_name)
+    except Exception as e:
+        print(f"Error converting country code {alpha_2}: {e}")
+        return None
+
+def preprocess_and_plot(results_df, search_term):
+    # Convert country codes from Alpha-2 to Alpha-3
+    results_df['Country_alpha3'] = results_df['Country'].apply(convert_alpha2_to_alpha3)
+    
+    # Convert sentiment scores to numeric, handling non-numeric values
+    for col in ['roberta_neg', 'roberta_neu', 'roberta_pos']:
+        results_df[col] = pd.to_numeric(results_df[col], errors='coerce')
+    
+    # Calculate average sentiment
+    results_df['avg_sentiment'] = results_df.apply(lambda x: (-1 * x['roberta_neg']) + (0 * x['roberta_neu']) + (1 * x['roberta_pos']), axis=1)
+    
+    # Aggregate average sentiment by country
+    country_sentiment = results_df.groupby('Country_alpha3')['avg_sentiment'].mean().reset_index()
+
+    # Generate and return the choropleth map
+    fig = px.choropleth(country_sentiment,
+                        locations="Country_alpha3",
+                        color="avg_sentiment",
+                        hover_name="Country_alpha3",
+                        locationmode='ISO-3',
+                        color_continuous_scale=px.colors.diverging.RdYlGn)
+                        
+    
+    fig.update_layout(
+        
+        margin=dict(l=0, r=0, t=0, b=0, pad=0),
+        paper_bgcolor='rgba(0,0,0,0)',
+        plot_bgcolor='rgba(0,0,0,0)',
+        geo=dict(landcolor='black', showocean=True, oceancolor='rgba(0,0,0,0)'),
+        title=dict(x=0.5, xanchor='center', font=dict(size=24, color='white')),
+        coloraxis_colorbar=dict(title='Sentiment', tickfont=dict(color='white'), titlefont=dict(color='white'))
+    )
+    fig.update_geos(
+    bgcolor='rgba(0,0,0,0)')
+    fig.update_traces(marker_line_width=0.1, marker_line_color='black')
+    fig.update_annotations(font=dict(color='white'))
+
     return fig

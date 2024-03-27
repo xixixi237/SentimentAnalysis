@@ -9,6 +9,7 @@ nltk
 pandas
 plotly
 python-dotenv
+pycountry_convert
 scipy
 streamlit
 torch
