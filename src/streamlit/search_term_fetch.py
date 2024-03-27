@@ -17,13 +17,10 @@ def initialize_youtube_api():
     return youtube
 
 # Fetch YouTube video details based on search term
-def fetch_video_details(youtube, search_term, num_weeks):
-    # Current time in UTC
-    now = datetime.now(isodate.UTC)
-    timeline = now - timedelta(weeks=num_weeks)
-    
-    # Format the time in RFC 3339 (without nanoseconds)
-    published_after = timeline.strftime('%Y-%m-%dT%H:%M:%SZ')
+def fetch_video_details(youtube, search_term, start_date, end_date):
+    # Format the start and end dates to RFC 3339 (without nanoseconds)
+    published_after = start_date.strftime('%Y-%m-%dT%H:%M:%SZ')
+    published_before = end_date.strftime('%Y-%m-%dT%H:%M:%SZ')
 
     search_response = youtube.search().list(
         q=search_term,
@@ -31,6 +28,7 @@ def fetch_video_details(youtube, search_term, num_weeks):
         maxResults=50,
         order='relevance',
         publishedAfter=published_after,
+        publishedBefore=published_before,
         type='video'
     ).execute()
     videos = []
@@ -120,12 +118,12 @@ def fetch_channel_subscriber_count(youtube, channel_ids):
     return channel_subscribers
 
 # Main function to perform fetching and compiling of YouTube data
-def search_term_fetch(search_term, num_weeks):
+def search_term_fetch(search_term, start_date, end_date):
     if search_term:  # Only proceed if a search term was entered
         youtube = initialize_youtube_api()
 
-        # Fetch video details based on the search term
-        video_details = fetch_video_details(youtube, search_term, num_weeks)
+        # Pass start_date and end_date to fetch video details
+        video_details = fetch_video_details(youtube, search_term, start_date, end_date)
         video_ids = [video['ID'] for video in video_details]
 
         # Fetch comments for the fetched videos

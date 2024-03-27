@@ -1,18 +1,17 @@
 argparse
 datetime
+dotenv
 emoji
 google-api-python-client
 isodate
-matplotlib
 numpy
 nltk
-ntscraper
 pandas
-praw
+plotly
 python-dotenv
 scipy
-seaborn
 streamlit
 torch
 tqdm
+transformers
 -e .

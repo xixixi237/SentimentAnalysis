@@ -1,5 +1,4 @@
 
-import seaborn as sns
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -51,7 +50,8 @@ def violin_plot(results_df, search_term):
 def likes_post(results_df, search_term):
     max_likes = results_df['Likes_y'].max()
     fig = px.scatter(results_df, x='ID', y='Likes_y',
-                    hover_data=['Comment'],  # Shows the comment text on hover
+                    hover_data=['Comment', 'roberta_neg', 
+                                'roberta_neu', 'roberta_pos'],  # Shows the comment & sentiments
                     color='Title',  # Color-code by title
                     title=f'Likes per Comment for {search_term}')
 
