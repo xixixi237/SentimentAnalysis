@@ -2,7 +2,7 @@ import streamlit as st
 from datetime import datetime, timedelta, date
 from search_term_fetch import search_term_fetch  # Ensure this function accepts start and end dates
 from produce_sentiment import produce_sentiment
-from plots import violin_plot, likes_post, word_plot, convert_alpha2_to_alpha3, preprocess_and_plot
+from plots import violin_plot, likes_post, word_plot, convert_alpha2_to_alpha3, preprocess_and_plot,timeline_plot
 
 
 def main():
@@ -50,6 +50,12 @@ def main():
                     except Exception as e:
                         st.error(f"An error occurred while generating the world map plot: {e}")
                     
+                    try:
+                        fig4 = timeline_plot(results_df, search_term)
+                        st.plotly_chart(fig4)
+                    except Exception as e:
+                        st.error(f"An error occurred while generating the word plot: {e}")
+
                     st.write(f"Dataframe results for '{search_term}':")
                     st.dataframe(results_df)
 

@@ -3,6 +3,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import plotly.express as px
+import plotly.graph_objects as go
+from plotly.subplots import make_subplots
 from pycountry_convert import country_alpha2_to_country_name, country_name_to_country_alpha3
 from collections import Counter
 from nltk.corpus import stopwords
@@ -161,3 +163,41 @@ def preprocess_and_plot(results_df, search_term):
     fig.update_annotations(font=dict(color='white'))
 
     return fig
+
+def timeline_plot(results_df, search_term):
+    results_df['PublishedAt'] = pd.to_datetime(results_df['PublishedAt'])
+    data_sorted = results_df.sort_values('PublishedAt')
+    daily_averages = data_sorted.groupby(data_sorted['PublishedAt'].dt.date).agg({
+        'roberta_neg': 'mean',
+        'roberta_neu': 'mean',
+        'roberta_pos': 'mean'
+    }).reset_index()
+
+    # Convert 'PublishedAt' back to datetime for plotting
+    daily_averages['PublishedAt'] = pd.to_datetime(daily_averages['PublishedAt'])
+
+    # Create a new plot with daily averages
+    fig = go.Figure()
+    bar_width = 0.5
+
+    # Add traces for negative, neutral, and positive sentiments with adjusted width
+    fig.add_trace(go.Bar(x=daily_averages['PublishedAt'], y=daily_averages['roberta_neg'],
+                        name='Negative', marker_color='red', width=bar_width))
+    fig.add_trace(go.Bar(x=daily_averages['PublishedAt'], y=daily_averages['roberta_neu'],
+                        name='Neutral', marker_color='grey', width=bar_width))
+    fig.add_trace(go.Bar(x=daily_averages['PublishedAt'], y=daily_averages['roberta_pos'],
+                        name='Positive', marker_color='green', width=bar_width))
+
+    fig.update_layout(
+        xaxis=dict(
+            type='date',
+            title='Date',
+            tickformat='%b %Y'  # Display only the year & month
+            
+        ),
+        yaxis_title='Average Sentiment Score',
+        title_text=f'Daily Average Sentiment Scores - {search_term}',
+        barmode='stack'
+    )
+    return fig
+
