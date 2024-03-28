@@ -1,7 +1,6 @@
 argparse
 datetime
 dotenv
-emoji
 google-api-python-client
 isodate
 numpy
