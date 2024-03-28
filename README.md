@@ -33,3 +33,24 @@ This application requires access to Google's Youtube API, and thus you need to o
 3. Inside the `.env` file, add the following line, replacing `Your_Api_Key` with the key you obtained:
 
     DEVELOPER_KEY=Your_Api_key 
+
+## Notes and Tweaks
+
+If you'd like to automtically save the final csv with the sentiment analysed please adjust the code in produce_sentiment.py on line 64 and set the index to True.
+
+    output_csv_path = f"./data/processed/{search_term}_roberta.csv"
+    results_df.to_csv(output_csv_path, index=False)
+
+Youtube search results are current organised by most views to lowest views using 'viewCount'.
+Adjust to suit your requirement on line 29 of search_term_fetch.py
+
+    order='viewCount',
+
+The options available to you are:
+
+    date: Resources are ordered by their creation date, with the most recently created resources returned first.
+    rating: Resources are ordered by their rating, with the highest-rated resources returned first.
+    relevance: Resources are ordered by their relevance to the search query, with the most relevant resources returned first. This is the default value if no order parameter is specified.
+    title: Resources are ordered alphabetically by their title.
+    videoCount: Channels are ordered in descending order of their number of uploaded videos.
+    viewCount: Resources are ordered by their number of views, with the most viewed resources returned first.
