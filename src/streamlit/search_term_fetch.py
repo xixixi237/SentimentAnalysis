@@ -26,7 +26,7 @@ def fetch_video_details(youtube, search_term, start_date, end_date):
         q=search_term,
         part='snippet',
         maxResults=50,
-        order='relevance',
+        order='rating',
         publishedAfter=published_after,
         publishedBefore=published_before,
         type='video'

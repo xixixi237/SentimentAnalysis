@@ -2,7 +2,7 @@ import streamlit as st
 from datetime import datetime, timedelta, date
 from search_term_fetch import search_term_fetch  # Ensure this function accepts start and end dates
 from produce_sentiment import produce_sentiment
-from plots import violin_plot, likes_post, word_plot, convert_alpha2_to_alpha3, preprocess_and_plot,timeline_plot
+from plots import violin_plot, likes_post, word_plot, convert_alpha2_to_alpha3, preprocess_and_plot,timeline_plot, country_share
 
 
 def main():
@@ -23,6 +23,7 @@ def main():
                     search_term_fetch(search_term, start_date, end_date)
                     results_df = produce_sentiment(search_term)
 
+                    
                     # Display existing plots
                     try:
                         fig1 = violin_plot(results_df, search_term)
@@ -47,6 +48,12 @@ def main():
                         # Ensure preprocess_and_plot is correctly implemented to accept and process results_df
                         world_map_fig = preprocess_and_plot(results_df, search_term)
                         st.plotly_chart(world_map_fig)
+                    except Exception as e:
+                        st.error(f"An error occurred while generating the world map plot: {e}")
+                    
+                    try:
+                        fig5 = country_share(results_df)
+                        st.plotly_chart(fig5)
                     except Exception as e:
                         st.error(f"An error occurred while generating the world map plot: {e}")
                     

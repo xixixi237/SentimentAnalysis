@@ -134,22 +134,24 @@ def preprocess_and_plot(results_df, search_term):
         results_df[col] = pd.to_numeric(results_df[col], errors='coerce')
     
     # Calculate average sentiment
-    results_df['avg_sentiment'] = results_df.apply(lambda x: (-1 * x['roberta_neg']) + (0 * x['roberta_neu']) + (1 * x['roberta_pos']), axis=1)
+    results_df['avg_sentiment'] = results_df.apply(
+        lambda x: (-1 * x['roberta_neg']) + (0 * x['roberta_neu']) + (1 * x['roberta_pos']), axis=1
+    )
     
     # Aggregate average sentiment by country
     country_sentiment = results_df.groupby('Country_alpha3')['avg_sentiment'].mean().reset_index()
 
-    # Generate and return the choropleth map
+    # Generate and return the choropleth map with a fixed scale for the color range
     fig = px.choropleth(country_sentiment,
                         locations="Country_alpha3",
                         color="avg_sentiment",
                         hover_name="Country_alpha3",
                         locationmode='ISO-3',
-                        color_continuous_scale=px.colors.diverging.RdYlGn)
-                        
-    
+                        color_continuous_scale=px.colors.diverging.RdYlGn,
+                        range_color=[-1, 1])  # Setting the color scale range from -1 to 1
+
+    # Update layout properties
     fig.update_layout(
-        
         margin=dict(l=0, r=0, t=0, b=0, pad=0),
         paper_bgcolor='rgba(0,0,0,0)',
         plot_bgcolor='rgba(0,0,0,0)',
@@ -157,8 +159,9 @@ def preprocess_and_plot(results_df, search_term):
         title=dict(x=0.5, xanchor='center', font=dict(size=24, color='white')),
         coloraxis_colorbar=dict(title='Sentiment', tickfont=dict(color='white'), titlefont=dict(color='white'))
     )
-    fig.update_geos(
-    bgcolor='rgba(0,0,0,0)')
+    
+    # Update additional properties for a consistent look
+    fig.update_geos(bgcolor='rgba(0,0,0,0)')
     fig.update_traces(marker_line_width=0.1, marker_line_color='black')
     fig.update_annotations(font=dict(color='white'))
 
@@ -180,13 +183,19 @@ def timeline_plot(results_df, search_term):
     fig = go.Figure()
     bar_width = 0.5
 
-    # Add traces for negative, neutral, and positive sentiments with adjusted width
-    fig.add_trace(go.Bar(x=daily_averages['PublishedAt'], y=daily_averages['roberta_neg'],
-                        name='Negative', marker_color='red', width=bar_width))
-    fig.add_trace(go.Bar(x=daily_averages['PublishedAt'], y=daily_averages['roberta_neu'],
-                        name='Neutral', marker_color='grey', width=bar_width))
-    fig.add_trace(go.Bar(x=daily_averages['PublishedAt'], y=daily_averages['roberta_pos'],
-                        name='Positive', marker_color='green', width=bar_width))
+    # Add traces for sentiments with specified colors
+    fig.add_trace(go.Bar(
+        x=daily_averages['PublishedAt'], y=daily_averages['roberta_neg'],
+        name='Negative', marker_color='red', width=bar_width
+    ))
+    fig.add_trace(go.Bar(
+        x=daily_averages['PublishedAt'], y=daily_averages['roberta_neu'],
+        name='Neutral', marker_color='yellow', width=bar_width  # Adjusted to yellow
+    ))
+    fig.add_trace(go.Bar(
+        x=daily_averages['PublishedAt'], y=daily_averages['roberta_pos'],
+        name='Positive', marker_color='green', width=bar_width  # Adjusted to green
+    ))
 
     fig.update_layout(
         xaxis=dict(
@@ -201,3 +210,19 @@ def timeline_plot(results_df, search_term):
     )
     return fig
 
+def country_share(results_df):
+    country_counts = results_df['Country'].value_counts()
+
+    # Create the pie chart
+    fig = go.Figure(data=[go.Pie(labels=country_counts.index, values=country_counts.values, pull=[0.1 if i == country_counts.idxmax() else 0 for i in country_counts.index])])
+
+    # Update the layout to add title and improve readability
+    fig.update_layout(
+        title_text='Country Distribution',
+        title_font_size=20,
+        legend_title='<b> Countries </b>',
+        legend_title_font_size=14,
+        legend_font_size=12
+    )
+
+    return fig
