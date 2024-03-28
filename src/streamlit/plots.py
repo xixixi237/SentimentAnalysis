@@ -181,7 +181,7 @@ def timeline_plot(results_df, search_term):
 
     # Create a new plot with daily averages
     fig = go.Figure()
-    bar_width = 0.5
+    bar_width = 0.8
 
     # Add traces for sentiments with specified colors
     fig.add_trace(go.Bar(
