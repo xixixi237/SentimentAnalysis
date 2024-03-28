@@ -28,7 +28,7 @@ def fetch_video_details(youtube, search_term, start_date, end_date):
         maxResults=50,
         order='viewCount',
         publishedAfter=published_after,
-        publishedBefore=published_before,
+        publishedBefore=published_before, 
         type='video'
     ).execute()
     videos = []
