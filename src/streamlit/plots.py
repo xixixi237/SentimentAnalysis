@@ -1,5 +1,3 @@
-
-import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import plotly.express as px
@@ -10,7 +8,6 @@ from collections import Counter
 from nltk.corpus import stopwords
 import re
 import nltk
-plt.style.use('ggplot')
 stop_words = set(stopwords.words('english'))
 
 

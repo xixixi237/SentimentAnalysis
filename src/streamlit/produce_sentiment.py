@@ -60,7 +60,7 @@ def produce_sentiment(search_term):
     results_df = results_df.merge(df, how='left')
     
     # Save the results DataFrame to a CSV file
-    output_csv_path = f"./data/processed/Youtube/{search_term}_roberta.csv"
+    output_csv_path = f"./data/processed/{search_term}_roberta.csv"
     results_df.to_csv(output_csv_path, index=False)
     
     print(f"Sentiment saved to {output_csv_path}")

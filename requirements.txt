@@ -1,6 +1,7 @@
 argparse
+chardet
 datetime
-dotenv
+python-dotenv
 google-api-python-client
 isodate
 numpy
@@ -14,4 +15,3 @@ streamlit
 torch
 tqdm
 transformers
--e .
