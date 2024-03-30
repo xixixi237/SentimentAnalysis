@@ -19,14 +19,14 @@ Make sure you have Python installed on your machine.
 ## Running the App
 
 1. In the terminal/command prompt, ensure you're in the project directory and the virtual environment is activated.
-2. Run the app: `streamlit run your_app.py`
+2. Run the app: `streamlit run streamlit_app.py`
 
 Open your web browser and go to the address shown in the terminal (usually http://localhost:8501) to see the app.
 
 
 ## Setting Up API Keys
 
-This application requires access to Google's Youtube API, and thus you need to obtain an API key to use it. Follow these steps to set up your environment:
+This application requires access to Google's Youtube API, you need to obtain an API key to use it. Follow these steps to set up your environment:
 
 1. Visit https://developers.google.com/youtube/v3 and follow the instructions to obtain your API key for the Youtube API.
 2. Create a file named `.env` in the root directory of this project.
@@ -36,13 +36,8 @@ This application requires access to Google's Youtube API, and thus you need to o
 
 ## Notes and Tweaks
 
-If you'd like to automtically save the final csv with the sentiment analysed please adjust the code in produce_sentiment.py on line 64 and set the index to True.
-
-    output_csv_path = f"./data/processed/{search_term}_roberta.csv"
-    results_df.to_csv(output_csv_path, index=False)
-
 Youtube search results are current organised by most views to lowest views using 'viewCount'.
-Adjust to suit your requirement on line 29 of search_term_fetch.py
+Adjust to suit your requirement on line 29 of search_term_fetch.py, in the fetch_video_details function.
 
     order='viewCount',
 

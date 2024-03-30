@@ -30,7 +30,7 @@ def main():
                         st.plotly_chart(fig1)
                     except Exception as e:
                         st.error(f"An error occurred while generating the violin plot: {e}")
-
+                    
                     try:
                         fig2 = likes_post(results_df, search_term)
                         st.plotly_chart(fig2)
@@ -43,9 +43,8 @@ def main():
                     except Exception as e:
                         st.error(f"An error occurred while generating the word plot: {e}")
 
-                    # Additionally, generate and display the world map plot
+                    # Generate and display the world map plot
                     try:
-                        # Ensure preprocess_and_plot is correctly implemented to accept and process results_df
                         world_map_fig = preprocess_and_plot(results_df, search_term)
                         st.plotly_chart(world_map_fig)
                     except Exception as e:
