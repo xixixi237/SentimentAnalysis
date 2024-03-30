@@ -16,13 +16,23 @@ Make sure you have Python installed on your machine.
    - macOS/Linux: `source venv/bin/activate`
 5. Install the requirements: `pip install -r requirements.txt`
 
+## PyTorch with GPU support
+
+It is advised to run pytorch on or gpu, typically using 16GB of memory sentiment analysis takes 15s.
+CPU takes 20 minutes on a 5900X.
+
+To install PyTorch with GPU support, make sure you have the correct CUDA version installed on your system. Visit the [PyTorch installation guide](https://pytorch.org/get-started/locally/) and select the appropriate configuration for your setup. Here is an example command to install PyTorch for CUDA 11.1:
+
+```shell
+pip install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu113
+```
+
 ## Running the App
 
 1. In the terminal/command prompt, ensure you're in the project directory and the virtual environment is activated.
 2. Run the app: `streamlit run streamlit_app.py`
 
 Open your web browser and go to the address shown in the terminal (usually http://localhost:8501) to see the app.
-
 
 ## Setting Up API Keys
 

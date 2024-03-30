@@ -12,6 +12,5 @@ python-dotenv
 pycountry_convert
 scipy
 streamlit
-torch
 tqdm
 transformers
