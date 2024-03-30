@@ -2,7 +2,7 @@ import streamlit as st
 from datetime import datetime, timedelta, date
 from search_term_fetch import search_term_fetch  # Ensure this function accepts start and end dates
 from produce_sentiment import produce_sentiment
-from plots import violin_plot, likes_post, word_plot, convert_alpha2_to_alpha3, preprocess_and_plot,timeline_plot, country_share
+from plots import violin_plot, likes_post, word_plot, preprocess_and_plot,timeline_plot, country_share
 
 
 def main():

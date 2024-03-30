@@ -2,7 +2,6 @@ import numpy as np
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
-from plotly.subplots import make_subplots
 from pycountry_convert import country_alpha2_to_country_name, country_name_to_country_alpha3
 from collections import Counter
 from nltk.corpus import stopwords
@@ -65,7 +64,7 @@ def likes_post(results_df, search_term):
         width=1000 
     )
 
-    # Potentially hide overlapping x-axis labels
+    # Hide any overlapping x-axis labels
     fig.update_xaxes(tickmode='array',
                     tickvals=[],
                     ticktext=[])
@@ -112,6 +111,7 @@ def word_plot(results_df, search_term):
     )
     return fig
 
+# Function to convert country codes from Alpha-2 to Alpha-3 (required by plotly)
 def convert_alpha2_to_alpha3(alpha_2):
     if not isinstance(alpha_2, str) or alpha_2.lower() == 'unknown':
         return None
@@ -157,7 +157,7 @@ def preprocess_and_plot(results_df, search_term):
         coloraxis_colorbar=dict(title='Sentiment', tickfont=dict(color='white'), titlefont=dict(color='white'))
     )
     
-    # Update additional properties for a consistent look
+    # Update additional properties for a aesthetics
     fig.update_geos(bgcolor='rgba(0,0,0,0)')
     fig.update_traces(marker_line_width=0.1, marker_line_color='black')
     fig.update_annotations(font=dict(color='white'))
@@ -178,20 +178,19 @@ def timeline_plot(results_df, search_term):
 
     # Create a new plot with daily averages
     fig = go.Figure()
-    bar_width = 0.8
 
     # Add traces for sentiments with specified colors
     fig.add_trace(go.Bar(
         x=daily_averages['PublishedAt'], y=daily_averages['roberta_neg'],
-        name='Negative', marker_color='red', width=bar_width
+        name='Negative', marker_color='red'
     ))
     fig.add_trace(go.Bar(
         x=daily_averages['PublishedAt'], y=daily_averages['roberta_neu'],
-        name='Neutral', marker_color='yellow', width=bar_width  # Adjusted to yellow
+        name='Neutral', marker_color='yellow'
     ))
     fig.add_trace(go.Bar(
         x=daily_averages['PublishedAt'], y=daily_averages['roberta_pos'],
-        name='Positive', marker_color='green', width=bar_width  # Adjusted to green
+        name='Positive', marker_color='green'
     ))
 
     fig.update_layout(
@@ -213,7 +212,7 @@ def country_share(results_df):
     # Create the pie chart
     fig = go.Figure(data=[go.Pie(labels=country_counts.index, values=country_counts.values, pull=[0.1 if i == country_counts.idxmax() else 0 for i in country_counts.index])])
 
-    # Update the layout to add title and improve readability
+    # Update the layout
     fig.update_layout(
         title_text='Country Distribution',
         title_font_size=20,

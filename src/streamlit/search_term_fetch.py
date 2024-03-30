@@ -144,9 +144,8 @@ def search_term_fetch(search_term, start_date, end_date):
         channel_countries = fetch_channel_countries(youtube, unique_channel_ids)
         videos_df['Country'] = videos_df['Channel ID'].map(channel_countries)
 
-        # Insert the search term column at the beginning of both DataFrames
+        # Insert the search term column at the beginning of the dataframe
         videos_df.insert(0, 'Search Term', search_term)
-        comments_df.insert(0, 'Search Term', search_term)
 
         # Merge video details with comments
         final_df = pd.merge(videos_df, comments_df, on='ID', how='outer')
@@ -155,5 +154,3 @@ def search_term_fetch(search_term, start_date, end_date):
         csv_filename = f'./data/{search_term}_youtube.csv'
         final_df.to_csv(csv_filename, index=False)
         st.success(f"Data saved to {csv_filename}.")
-
-
